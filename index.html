@@ -4,6 +4,7 @@
         <title>d3.js data driven page</title>
         <script src="https://d3js.org/d3.v6.min.js"></script>
         <style>
+             body {background-color: white;}
             th{
                 color:blue;
             }
@@ -23,9 +24,22 @@
                 font-weight: bold;
             }
             #myCanvas{
-                background-color:yellow ;
+                background-color:rgb(238, 232, 232) ;
 
             }
+
+            tr:hover { 
+            background: red; 
+            }
+            td a { 
+            display: block; 
+            border: 1px solid black;
+            padding: 16px; 
+            }
+
+
+
+
         </style>
     </head>
 
@@ -36,9 +50,10 @@
             <button onclick="colorP()">Click me</button>
             <div id="dateSelector"></div>
             <svg id="myCanvas" style="width:100%; height: 200px;"></svg>
-            <table>
+            <table id="table">
                     <thead></thead>
-                    <tbody></tbody>
+                    <tbody>
+                    </tbody>
             </table>
 
 
@@ -51,8 +66,10 @@
                      "category":"categoria",
                      "value":"valor"
                  }
-            var data;
+
+        var data;
         csv_url = false ? "category-brands.csv" : "https://raw.githubusercontent.com/bernardo-dauria/2021-02-10-example/main/category-brands.csv"
+    
         d3.csv(csv_url).then(tidying)
 
         function updateTable(d) {
@@ -63,12 +80,12 @@
                     .selectAll("td")
                     .data(e =>columns.map(x => e[x]))
                     .join("td")
-                        .text(x => x);
+                        .text(x => x)                          
         }
+                
 
         function makeHeader(d) {
             d3.select("table thead").selectAll("tr").remove()
-
             d3.select("table thead")
               .append("tr")
               .selectAll("th")
@@ -83,7 +100,6 @@
             maxValue = d3.reduce(d, (p, v) => Math.max(p,v.value) , 0)
             dates = Array.from(new Set(d.map(e => e.date)));
             dataSelector(dates);
-
             makeHeader(d)
             updateTable(d)
         }
@@ -98,14 +114,24 @@
             .append("option") 
             .text(e=>e.slice(0,4))
             .attr("value",e=>e)
-        }
+  }
 
+        
         function updateSelect(e){
             val = d3.select("select").node().value
             fdata=d3.filter(data,e=>e.date==val)
+            fdata.sort(function(a,b) {
+              return d3.descending(parseFloat(a.value),parseFloat(b.value));
+          });
+            fdata=fdata.slice(0, 10);
+           
+                 
             updateTable(fdata)
             updateChart(fdata)
+            
         }
+
+
 
         function updateChart(data) {
             svg =  d3.select("#myCanvas");
@@ -143,10 +169,10 @@
             d3.selectAll("p").style("color","red");
         }
 
-        
-
-
+    
     </script>
+
+    
 </body>
 
 </html>

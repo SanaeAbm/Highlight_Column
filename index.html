@@ -28,18 +28,18 @@
 
             }
 
-            tr:hover { 
-            background: red; 
+            tbody tr:hover.selected td,
+            tbody tr:hover td {
+            background-color: #FFEFC6;
+            cursor: pointer;
             }
-            td a { 
-            display: block; 
-            border: 1px solid black;
-            padding: 16px; 
+            tbody tr.selected td {
+            background-color: #ffd659;
             }
 
-
-
-
+            .clickable {
+                        cursor: pointer;
+                    }
         </style>
     </head>
 
@@ -50,7 +50,9 @@
             <button onclick="colorP()">Click me</button>
             <div id="dateSelector"></div>
             <svg id="myCanvas" style="width:100%; height: 200px;"></svg>
-            <table id="table">
+            
+            
+            <table id="table" >   
                     <thead></thead>
                     <tbody>
                     </tbody>
@@ -60,7 +62,8 @@
         </p>
 
         <script>
-         const   cs={
+    
+         const  cs={
                      "date":"fecha",
                      "name":"nombre",
                      "category":"categoria",
@@ -80,7 +83,8 @@
                     .selectAll("td")
                     .data(e =>columns.map(x => e[x]))
                     .join("td")
-                        .text(x => x)                          
+                        .text(x => x)   
+                                               
         }
                 
 
@@ -94,6 +98,7 @@
         }
          
         var columns, maxValue;
+
         function tidying(d) {
             data=d
             columns=d.columns
@@ -104,6 +109,7 @@
             updateTable(d)
         }
 
+    
 
         function dataSelector(d){
             d3.select("#dateSelector")
@@ -123,12 +129,10 @@
             fdata.sort(function(a,b) {
               return d3.descending(parseFloat(a.value),parseFloat(b.value));
           });
-            fdata=fdata.slice(0, 10);
-           
-                 
+            fdata=fdata.slice(0, 10);   
+
             updateTable(fdata)
             updateChart(fdata)
-            
         }
 
 
@@ -141,6 +145,7 @@
             y = d3.scaleLinear([0, maxValue], [0,h])
             cat = new Set(d3.map(data, d => d.category))
             color = d3.scaleOrdinal(cat, d3.schemeTableau10)
+         
 
             svgBind = svg.text("")
                 .selectAll("rect")
@@ -148,11 +153,12 @@
 
             svgBind.enter()
                 .append('rect')
-                .attr('x', (d , i) => x(i))
+                .attr('x', (d,i) => x(i))
                 .attr('y', d => y(maxValue - d.value))
                 .attr('height', d => y(d.value))
                 .attr('width', x(1)*0.95)
                 .attr('fill', d => color(d.category))
+  
 
             svgBind.enter()
                 .append("text")
@@ -164,15 +170,32 @@
                         + 'rotate(-90)')
                 .text(d => d.name);
             }
+            
+
+        function click_change(elem){
+            var p=document.getElementById('table')
+            d3.selectAll("tr").style("color","red");
+            }
+
+        function onload() {
+            var rows = document.getElementById('table');
+            for (i = 0; i < rows.length; i++) {
+                rows[i].onclick = function() {
+                    alert(this.rowIndex + 1);
+        }
+    }
+}
+
+
+
 
         function colorP(){
             d3.selectAll("p").style("color","red");
         }
 
-    
     </script>
+     
 
-    
+   
 </body>
-
 </html>

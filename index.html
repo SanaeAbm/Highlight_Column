@@ -57,11 +57,27 @@
            <br>
            <div class="special">Select a year to see the correponding barplot </div>
            <br>
-            <div id="dateSelector"></div>
+            <div id="dateSelector">
+            </div>
+            <br>
+            <div class="special">Select the number of rows to display </div>
+            <br>
+            <select class="combo" id="options" onChange="updateSelect()">
+                <option value="" selected disabled hidden> Number of rows</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
+            </select>
+            <br>
             <br>
             <svg id="myCanvas" style="width:100%; height: 200px;"></svg>
+            <br>
+            <br>
             
-            
+           <br>
+           <br>
+
             <table id="table" >   
                     <thead></thead>
                     <tbody>
@@ -119,7 +135,6 @@
             updateTable(d)
         }
 
-    
 
         function dataSelector(d){
             d3.select("#dateSelector")
@@ -132,17 +147,29 @@
             .attr("value",e=>e)
   }
 
-        
+ 
         function updateSelect(e){
             val = d3.select("select").node().value
             fdata=d3.filter(data,e=>e.date==val)
             fdata.sort(function(a,b) {
               return d3.descending(parseFloat(a.value),parseFloat(b.value));
           });
-            fdata=fdata.slice(0, 10);   
+          if (document.getElementById('options').value=="10") {
+                fdata=fdata.slice(0, 10);  
+            } 
+         else if (document.getElementById('options').value=="20") {
+                fdata=fdata.slice(0, 20); 
+            }
+         else if (document.getElementById('options').value=="30") {
+                fdata=fdata.slice(0, 30); 
+            }
+        else if (document.getElementById('options').value=="40") {
+                fdata=fdata.slice(0, 40); 
+            }
 
             updateTable(fdata)
             updateChart(fdata)
+           
         }
 
 
